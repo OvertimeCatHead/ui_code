@@ -202,6 +202,7 @@ class Ui_Form(object):
         self.background.raise_()
         self.top_margin.raise_()
         self.bottom_margin.raise_()
+        self.bottom_margin.raise_()
         self.left_margin.raise_()
         self.right_margin.raise_()
         self.word_spacing_sigma.raise_()
@@ -374,6 +375,6 @@ class Ui_Form(object):
 #
 #
 app = QtWidgets.QApplication()
-starts=my_win()
+starts=Ui_Form()
 starts.show()
 app.exec_()

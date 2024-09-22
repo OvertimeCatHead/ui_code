@@ -21,9 +21,10 @@ class Student():
     def name(self):
         return self.m_name
 
+
 class StudentFrame(QtWidgets.QFrame):
     def __init__(self, parent=None):
-        super(StudentFrame,self).__init__()
+        super(StudentFrame, self).__init__()
         self.layout = QtWidgets.QHBoxLayout()
         self.line_name = QtWidgets.QLineEdit()
         self.layout.addWidget(self.line_name)
@@ -43,7 +44,6 @@ class StudentListViewModel(QtCore.QAbstractListModel):
 
     def __init__(self):
         super().__init__()
-        self.m_testNumber = 1001
 
     def rowCount(self, parent=None):
         return len(self.m_studentList)
@@ -63,19 +63,17 @@ class StudentListViewModel(QtCore.QAbstractListModel):
             return QtCore.QSize(0, 100)
         return None
 
-    def add(self, name):
+    def add(self, name, img):
+        print(name, img)
         self.beginInsertRows(QtCore.QModelIndex(), self.rowCount(), self.rowCount())
         studet = Student()
-        studet.set_id(int(self.m_testNumber))
-        studet.set_name(str(name))
+        studet.set_id(name)
+        studet.set_name(img)
         self.m_studentList.append(studet)
         self.layoutChanged.emit()
-        self.m_testNumber += 1
         self.endInsertRows()
 
-
     def get_data(self, index):
-        print(self.m_studentList)
         if self.rowCount() == 0:
             self.add()
         return self.m_studentList[index]
@@ -89,31 +87,27 @@ class StudentItemDelegate(QtWidgets.QStyledItemDelegate):
         self.m_studentFrame = StudentFrame()
 
     def paint(self, painter, option, index):
-        '''
-        image_path = index.data(Qt.DisplayRole)
-        if image_path:
-            pixmap = QPixmap(image_path)
-            # 缩放图片到指定区域
-            scaled_pixmap = pixmap.scaled(option.rect.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            painter.drawPixmap(option.rect, scaled_pixmap)
-        '''
-        print(dir(index))
-        print(index.data(Qt.DisplayRole))
-
+        opc = option.rect
         if index.column() == 0:
             stu = self.m_studentListViewModel.get_data(index.row())
-            print(stu.m_id,stu.m_name)
+            print(stu.m_id, stu.m_name)
             if stu:
                 self.m_studentFrame.set_name(stu.name())
-                self.m_studentFrame.resize(option.rect.width(),option.rect.height())
+                self.m_studentFrame.resize(opc.width(), opc.height())
                 if option.state & QtWidgets.QStyle.State_Selected:
                     self.m_studentFrame.set_slted(True)
                 else:
                     self.m_studentFrame.set_slted(False)
             pixmap = QtGui.QPixmap(stu.m_name)
-            painter.drawPixmap(option.rect, pixmap)
+            img_rec = QtCore.QRect(opc.x() + 2, opc.y() - 2, 94, 94)
+            painter.drawPixmap(img_rec, pixmap)
+            print(opc,img_rec)
+            txt_rec = QtCore.QRect(2+94+2+5, opc.y()+94/2-10, 94, 94)
+            print(txt_rec)
+            painter.drawText(txt_rec, stu.m_id)
 
         super().paint(painter, option, index)
+
 
 class main_win(QtWidgets.QWidget):
     def __init__(self):
@@ -132,15 +126,28 @@ class main_win(QtWidgets.QWidget):
         self.my_listview.setModel(self.m_studentListViewModel)
         self.my_listview.setItemDelegate(self.m_studentItemDelegate)
 
+        self.add_datas()
         self.btn = QtWidgets.QPushButton('add')
-        self.btn.clicked.connect(self.clk)
+        # self.btn.clicked.connect(self.clk)
         self.lay.addWidget(self.my_listview)
         self.lay.addWidget(self.btn)
         self.setLayout(self.lay)
 
-    def clk(self):
+    def add_datas(self):
+        dic = {}
+        for i in range(12000):
+            self.m_studentListViewModel.add(str(i), r'C:\Users\pc\Desktop\tanzi.jpg')
 
-        self.m_studentListViewModel.add(name=r'C:\Users\pc\Desktop\tanzi.jpg')
+    # def clk(self):
+    #     for i in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+    #               'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']:
+    #         if i in self.dic:
+    #             print(i,self.dic)
+    #             if i not in self.dic:
+    #                 continue
+    #             self.m_studentListViewModel.add(i, self.dic[1])
+    #             self.dic.pop(i)
+
 
 app = QtWidgets.QApplication()
 starts = main_win()
