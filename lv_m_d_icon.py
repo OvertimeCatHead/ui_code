@@ -120,7 +120,6 @@ class main_win(QtWidgets.QWidget):
         self.lay = QtWidgets.QHBoxLayout()
 
         self.my_listview = QtWidgets.QListView()
-        # self.my_listview.setViewMode(QtWidgets.QListView.IconMode)
 
         self.m_studentListViewModel = StudentListViewModel()
         self.m_studentItemDelegate = StudentItemDelegate(self.m_studentListViewModel,3,3)
@@ -129,29 +128,14 @@ class main_win(QtWidgets.QWidget):
         self.my_listview.setItemDelegate(self.m_studentItemDelegate)
 
         self.add_datas()
-        self.btn = QtWidgets.QPushButton('add')
-        # self.btn.clicked.connect(self.clk)
         self.lay.addWidget(self.my_listview)
-        self.lay.addWidget(self.btn)
         self.setLayout(self.lay)
 
     def add_datas(self):
         for img_name in os.listdir(r'C:\Users\pc\Desktop\imgs'):
             img_path = os.path.join(r'C:\Users\pc\Desktop\imgs',img_name)
             self.m_studentListViewModel.add(str(img_name),img_path)
-        # dic = {}
-        # for i in range(12000):
-        #     self.m_studentListViewModel.add(str(i), r'C:\Users\pc\Desktop\tanzi.jpg')
 
-    # def clk(self):
-    #     for i in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-    #               'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']:
-    #         if i in self.dic:
-    #             print(i,self.dic)
-    #             if i not in self.dic:
-    #                 continue
-    #             self.m_studentListViewModel.add(i, self.dic[1])
-    #             self.dic.pop(i)
 
 
 app = QtWidgets.QApplication()
